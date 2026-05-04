@@ -3,20 +3,6 @@ import sqlite3
 import json
 from datetime import datetime
 
-response = requests.get("https://api.open-meteo.com/v1/forecast?latitude=4.71&longitude=-74.07&current_weather=true")
-
-response_json = response.json()['current_weather']
-response_json_show = json.dumps(response_json, indent=4)
-print(response_json_show)
-ingested_at = datetime.now()
-
-data_db = (
-    response_json['temperature'],
-    response_json['windspeed'],
-    response_json['weathercode'],
-    response_json['time'],
-    ingested_at
-)
 
 #Capa Bronze
 def load_bronze(conn, data):
@@ -118,6 +104,22 @@ def load_silver(conn):
     
 
 if __name__ == "__main__":
+    response = requests.get("https://api.open-meteo.com/v1/forecast?latitude=4.71&longitude=-74.07&current_weather=true")
+
+    response_json = response.json()['current_weather']
+    response_json_show = json.dumps(response_json, indent=4)
+    print(response_json_show)
+    ingested_at = datetime.now()
+
+    data_db = (
+        response_json['temperature'],
+        response_json['windspeed'],
+        response_json['weathercode'],
+        response_json['time'],
+        ingested_at
+    )
+
+
     connection = sqlite3.connect("medallion.db")
     cur = connection.cursor()
     
